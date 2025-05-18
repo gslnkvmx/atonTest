@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: aton_test_db
+    environment:
+      POSTGRES_DB: aton_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - aton_network
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: aton_test_api
+    depends_on:
+      - postgres
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=aton_db;Username=postgres;Password=postgres
+      - Jwt__Key=your_very_long_secret_key_here_min_32_chars
+      - Jwt__Issuer=aton_test
+      - Jwt__Audience=aton_test
+    ports:
+      - "8080:8080"
+    networks:
+      - aton_network
+
+networks:
+  aton_network:
+    driver: bridge
+
+volumes:
+  postgres_data: 

@@ -50,7 +50,7 @@ public class AuthController : ControllerBase
                 claims: claims,
                 expires: DateTime.UtcNow.Add(TimeSpan.FromMinutes(10)),
                 signingCredentials: new SigningCredentials(
-                    new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"])),
+                    new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"] ?? "your_very_long_secret_key_here_min_32_chars")),
                     SecurityAlgorithms.HmacSha256));
 
             var token = new JwtSecurityTokenHandler().WriteToken(jwt);
@@ -66,6 +66,6 @@ public class AuthController : ControllerBase
 
 public class LoginModel
 {
-    public string Login { get; set; }
-    public string Password { get; set; }
+    public required string Login { get; set; }
+    public required string Password { get; set; }
 }
