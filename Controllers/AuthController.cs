@@ -8,6 +8,9 @@ using System.Security.Cryptography;
 
 namespace atonTest.Controllers;
 
+/// <summary>
+/// Контроллер для аутентификации пользователей
+/// </summary>
 [ApiController]
 [Route("api/[controller]")]
 public class AuthController : ControllerBase
@@ -21,6 +24,11 @@ public class AuthController : ControllerBase
         _configuration = configuration;
     }
 
+    /// <summary>
+    /// Выполняет вход пользователя в систему
+    /// </summary>
+    /// <param name="model">Данные для входа (логин и пароль)</param>
+    /// <returns>JWT токен для доступа</returns>
     [HttpPost("login")]
     public IActionResult Login([FromBody] LoginModel model)
     {

@@ -9,6 +9,9 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace atonTest.Controllers;
 
+/// <summary>
+/// Контроллер для управления пользователями
+/// </summary>
 [ApiController]
 [Authorize]
 [Route("api/[controller]")]
@@ -21,6 +24,11 @@ public class UsersController : ControllerBase
     _userService = userService;
   }
 
+  /// <summary>
+  /// Создает нового пользователя (только для администраторов)
+  /// </summary>
+  /// <param name="request">Данные для создания пользователя</param>
+  /// <returns>Созданный пользователь</returns>
   [HttpPost]
   [Authorize(Roles = "admin")]
   public IActionResult CreateUser([FromBody] UserCreateRequest request)
@@ -38,6 +46,12 @@ public class UsersController : ControllerBase
     }
   }
 
+  /// <summary>
+  /// Обновляет информацию о пользователе
+  /// </summary>
+  /// <param name="login">Логин пользователя</param>
+  /// <param name="request">Данные для обновления</param>
+  /// <returns>Обновленный пользователь</returns>
   [HttpPut("{login}")]
   public IActionResult UpdateUser(string login, [FromBody] UserUpdateRequest request)
   {
@@ -54,6 +68,12 @@ public class UsersController : ControllerBase
     }
   }
 
+  /// <summary>
+  /// Обновляет пароль пользователя
+  /// </summary>
+  /// <param name="login">Логин пользователя</param>
+  /// <param name="request">Новый пароль</param>
+  /// <returns>Обновленный пользователь</returns>
   [HttpPut("{login}/password")]
   public IActionResult UpdatePassword(string login, [FromBody] PasswordUpdateRequest request)
   {
@@ -70,6 +90,12 @@ public class UsersController : ControllerBase
     }
   }
 
+  /// <summary>
+  /// Обновляет логин пользователя
+  /// </summary>
+  /// <param name="login">Текущий логин пользователя</param>
+  /// <param name="request">Новый логин</param>
+  /// <returns>Обновленный пользователь</returns>
   [HttpPut("{login}/login")]
   public IActionResult UpdateLogin(string login, [FromBody] LoginUpdateRequest request)
   {
@@ -86,6 +112,10 @@ public class UsersController : ControllerBase
     }
   }
 
+  /// <summary>
+  /// Получает список активных пользователей (только для администраторов)
+  /// </summary>
+  /// <returns>Список активных пользователей</returns>
   [HttpGet("active")]
   [Authorize(Roles = "admin")]
   public IActionResult GetActiveUsers()
@@ -101,6 +131,11 @@ public class UsersController : ControllerBase
     }
   }
 
+  /// <summary>
+  /// Получает информацию о пользователе по логину (только для администраторов)
+  /// </summary>
+  /// <param name="login">Логин пользователя</param>
+  /// <returns>Информация о пользователе</returns>
   [HttpGet("{login}")]
   [Authorize(Roles = "admin")]
   public IActionResult GetUserByLogin(string login)
@@ -118,6 +153,12 @@ public class UsersController : ControllerBase
     }
   }
 
+  /// <summary>
+  /// Получает полную информацию о пользователе по логину и паролю
+  /// </summary>
+  /// <param name="login">Логин пользователя</param>
+  /// <param name="request">Пароль пользователя</param>
+  /// <returns>Полная информация о пользователе</returns>
   [HttpGet("{login}/fullInfo")]
   public IActionResult GetUserByLoginAndPassword(string login, [FromBody] GetUserByLoginAndPasswordRequest request)
   {
@@ -134,6 +175,11 @@ public class UsersController : ControllerBase
     }
   }
 
+  /// <summary>
+  /// Получает список пользователей старше указанного возраста (только для администраторов)
+  /// </summary>
+  /// <param name="age">Возраст</param>
+  /// <returns>Список пользователей</returns>
   [HttpGet("older-than/{age}")]
   [Authorize(Roles = "admin")]
   public IActionResult GetUsersOlderThan(int age)
@@ -149,6 +195,12 @@ public class UsersController : ControllerBase
     }
   }
 
+  /// <summary>
+  /// Удаляет пользователя (только для администраторов)
+  /// </summary>
+  /// <param name="login">Логин пользователя</param>
+  /// <param name="softDelete">Флаг мягкого удаления</param>
+  /// <returns>Результат операции</returns>
   [HttpDelete("{login}")]
   [Authorize(Roles = "admin")]
   public IActionResult DeleteUser(string login, [FromQuery] bool softDelete)
@@ -164,6 +216,11 @@ public class UsersController : ControllerBase
     }
   }
 
+  /// <summary>
+  /// Восстанавливает удаленного пользователя (только для администраторов)
+  /// </summary>
+  /// <param name="login">Логин пользователя</param>
+  /// <returns>Восстановленный пользователь</returns>
   [HttpPut("{login}/restore")]
   [Authorize(Roles = "admin")]
   public IActionResult RestoreUser(string login)
