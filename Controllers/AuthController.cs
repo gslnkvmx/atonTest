@@ -1,0 +1,63 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using atonTest.Services;
+using System.Security.Cryptography;
+
+namespace atonTest.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+public class AuthController : ControllerBase
+{
+    private readonly UserService _userService;
+    private readonly IConfiguration _configuration;
+
+    public AuthController(UserService userService, IConfiguration configuration)
+    {
+        _userService = userService;
+        _configuration = configuration;
+    }
+
+    [HttpPost("login")]
+    public IActionResult Login([FromBody] LoginModel model)
+    {
+        try
+        {
+            var user = _userService.GetUser(model.Login, model.Password);
+            if (user == null)
+                return Unauthorized();
+
+            var claims = new List<Claim>
+            {
+                new Claim("login", user.Login),
+                new Claim(ClaimTypes.Role, user.Admin ? "admin" : "user")
+            };
+
+            var jwt = new JwtSecurityToken(
+                issuer: _configuration["Jwt:Issuer"],
+                audience: _configuration["Jwt:Audience"],
+                claims: claims,
+                expires: DateTime.UtcNow.Add(TimeSpan.FromMinutes(10)),
+                signingCredentials: new SigningCredentials(
+                    new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"])),
+                    SecurityAlgorithms.HmacSha256));
+
+            var token = new JwtSecurityTokenHandler().WriteToken(jwt);
+
+            return Ok(new { AccessToken = token });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+}
+
+public class LoginModel
+{
+    public string Login { get; set; }
+    public string Password { get; set; }
+}
