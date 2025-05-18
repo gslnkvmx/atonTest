@@ -1,9 +1,5 @@
-using System;
-using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.ComponentModel.DataAnnotations;
-using atonTest.Models;
 using atonTest.Services;
 using Microsoft.AspNetCore.Authorization;
 
@@ -237,55 +233,106 @@ public class UsersController : ControllerBase
   }
 }
 
+/// <summary>
+/// Модель запроса для создания пользователя
+/// </summary>
 public record UserCreateRequest
 {
+  /// <summary>
+  /// Логин пользователя (только латинские буквы и цифры)
+  /// </summary>
   [Required(ErrorMessage = "Логин обязателен")]
   [RegularExpression(@"^[a-zA-Z0-9]+$", ErrorMessage = "Логин может содержать только латинские буквы и цифры")]
-  public string Login { get; set; }
+  public required string Login { get; set; }
 
+  /// <summary>
+  /// Пароль пользователя (только латинские буквы и цифры)
+  /// </summary>
   [Required(ErrorMessage = "Пароль обязателен")]
   [RegularExpression(@"^[a-zA-Z0-9]+$", ErrorMessage = "Пароль может содержать только латинские буквы и цифры")]
-  public string Password { get; set; }
+  public required string Password { get; set; }
 
+  /// <summary>
+  /// Имя пользователя (латинские и русские буквы)
+  /// </summary>
   [Required(ErrorMessage = "Имя обязательно")]
   [RegularExpression(@"^[a-zA-Zа-яА-Я]+$", ErrorMessage = "Имя может содержать только латинские и русские буквы")]
-  public string Name { get; set; }
+  public required string Name { get; set; }
 
+  /// <summary>
+  /// Пол пользователя (0 - женщина, 1 - мужчина, 2 - неизвестно)
+  /// </summary>
   [Required(ErrorMessage = "Пол обязателен")]
   [Range(0, 2, ErrorMessage = "Пол должен быть 0 (женщина), 1 (мужчина) или 2 (неизвестно)")]
   public int Gender { get; set; }
 
+  /// <summary>
+  /// Дата рождения пользователя
+  /// </summary>
   public DateTime? Birthday { get; set; }
 
+  /// <summary>
+  /// Флаг администратора
+  /// </summary>
   public bool Admin { get; set; }
 }
 
+/// <summary>
+/// Модель запроса для обновления информации о пользователе
+/// </summary>
 public record UserUpdateRequest
 {
+  /// <summary>
+  /// Новое имя пользователя (латинские и русские буквы)
+  /// </summary>
   [RegularExpression(@"^[a-zA-Zа-яА-Я]+$", ErrorMessage = "Имя может содержать только латинские и русские буквы")]
-  public string Name { get; set; }
+  public required string Name { get; set; }
 
+  /// <summary>
+  /// Новый пол пользователя (0 - женщина, 1 - мужчина, 2 - неизвестно)
+  /// </summary>
   [Range(0, 2, ErrorMessage = "Пол должен быть 0 (женщина), 1 (мужчина) или 2 (неизвестно)")]
   public int? Gender { get; set; }
 
+  /// <summary>
+  /// Новая дата рождения пользователя
+  /// </summary>
   public DateTime? Birthday { get; set; }
 }
 
+/// <summary>
+/// Модель запроса для обновления пароля пользователя
+/// </summary>
 public record PasswordUpdateRequest
 {
+  /// <summary>
+  /// Новый пароль пользователя (только латинские буквы и цифры)
+  /// </summary>
   [Required(ErrorMessage = "Новый пароль обязателен")]
   [RegularExpression(@"^[a-zA-Z0-9]+$", ErrorMessage = "Пароль может содержать только латинские буквы и цифры")]
-  public string NewPassword { get; set; }
+  public required string NewPassword { get; set; }
 }
 
+/// <summary>
+/// Модель запроса для обновления логина пользователя
+/// </summary>
 public record LoginUpdateRequest
 {
+  /// <summary>
+  /// Новый логин пользователя (только латинские буквы и цифры)
+  /// </summary>
   [Required(ErrorMessage = "Новый логин обязателен")]
   [RegularExpression(@"^[a-zA-Z0-9]+$", ErrorMessage = "Логин может содержать только латинские буквы и цифры")]
-  public string NewLogin { get; set; }
+  public required string NewLogin { get; set; }
 }
 
+/// <summary>
+/// Модель запроса для получения информации о пользователе по логину и паролю
+/// </summary>
 public record GetUserByLoginAndPasswordRequest
 {
+  /// <summary>
+  /// Пароль пользователя
+  /// </summary>
   public required string Password { get; set; }
 }

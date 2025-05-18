@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using atonTest.Controllers;
-using Microsoft.EntityFrameworkCore;
 using atonTest.Data;
 using atonTest.Models;
 using System.Security.Cryptography;
@@ -60,7 +56,7 @@ public class UserService
     if (_context.Users.Any(u => u.Login == request.Login))
       throw new Exception("Пользователь с таким логином уже существует");
 
-    var creator = _httpContextAccessor.HttpContext.User.FindFirst("login").Value;
+    var creator = _httpContextAccessor.HttpContext!.User.FindFirst("login")!.Value;
 
     var user = new User
     {
@@ -89,13 +85,13 @@ public class UserService
     if (user == null)
       throw new Exception("Пользователь не найден");
 
-    var role = _httpContextAccessor.HttpContext.User.IsInRole("admin");
+    var role = _httpContextAccessor.HttpContext!.User.IsInRole("admin");
     if (!role)
     {
       VerifyUser(login);
     }
 
-    var modifiedBy = _httpContextAccessor.HttpContext.User.FindFirst("login").Value;
+    var modifiedBy = _httpContextAccessor.HttpContext.User.FindFirst("login")!.Value;
 
     if (name != null) user.Name = name;
     if (gender.HasValue) user.Gender = gender.Value;
@@ -114,13 +110,13 @@ public class UserService
     if (user == null)
       throw new Exception("Пользователь не найден");
 
-    var role = _httpContextAccessor.HttpContext.User.IsInRole("admin");
+    var role = _httpContextAccessor.HttpContext!.User.IsInRole("admin");
     if (!role)
     {
       VerifyUser(login);
     }
 
-    var modifiedBy = _httpContextAccessor.HttpContext.User.FindFirst("login").Value;
+    var modifiedBy = _httpContextAccessor.HttpContext.User.FindFirst("login")!.Value;
 
     user.Password = HashPassword(newPassword);
     user.ModifiedOn = DateTime.UtcNow;
@@ -136,13 +132,13 @@ public class UserService
     if (user == null)
       throw new Exception("Пользователь не найден");
 
-    var role = _httpContextAccessor.HttpContext.User.IsInRole("admin");
+    var role = _httpContextAccessor.HttpContext!.User.IsInRole("admin");
     if (!role)
     {
       VerifyUser(oldLogin);
     }
 
-    var modifiedBy = _httpContextAccessor.HttpContext.User.FindFirst("login").Value;
+    var modifiedBy = _httpContextAccessor.HttpContext.User.FindFirst("login")!.Value;
 
     if (_context.Users.Any(u => u.Login == newLogin))
       throw new Exception("Пользователь с таким логином уже существует");
@@ -163,7 +159,7 @@ public class UserService
         .ToList();
   }
 
-  public User GetUser(string login, string password)
+  public User? GetUser(string login, string password)
   {
     var user = _context.Users.FirstOrDefault(u => u.Login == login);
     if (user == null || !VerifyPassword(password, user.Password))
@@ -175,12 +171,12 @@ public class UserService
     return user;
   }
 
-  public User GetUserByLogin(string login)
+  public User? GetUserByLogin(string login)
   {
     return _context.Users.FirstOrDefault(u => u.Login == login);
   }
 
-  public User GetUserByLoginAndPassword(string login, string password)
+  public User? GetUserByLoginAndPassword(string login, string password)
   {
     var user = _context.Users.FirstOrDefault(u => u.Login == login);
     if (user == null || !VerifyPassword(password, user.Password))
@@ -205,7 +201,7 @@ public class UserService
     if (user == null)
       throw new Exception("Пользователь не найден");
 
-    var revokedBy = _httpContextAccessor.HttpContext.User.FindFirst("login").Value;
+    var revokedBy = _httpContextAccessor.HttpContext!.User.FindFirst("login")!.Value;
 
     if (softDelete)
     {
@@ -227,7 +223,7 @@ public class UserService
       throw new Exception("Пользователь не найден");
 
     user.RevokedOn = null;
-    user.RevokedBy = null;
+    user.RevokedBy = "";
     user.ModifiedOn = DateTime.UtcNow;
 
     _context.SaveChanges();
@@ -243,7 +239,7 @@ public class UserService
     if (user.RevokedOn.HasValue)
       throw new Exception("Пользователь неактивен");
 
-    if (login != _httpContextAccessor.HttpContext.User.FindFirst("login").Value)
+    if (login != _httpContextAccessor.HttpContext?.User.FindFirst("login")?.Value)
       throw new Exception("Вам недоступна данная операция");
 
     return user;
