@@ -12,7 +12,7 @@ using atonTest.Data;
 namespace atonTest.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250507183943_InitialCreate")]
+    [Migration("20250518115500_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />

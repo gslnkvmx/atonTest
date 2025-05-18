@@ -76,7 +76,7 @@ builder.Services.AddAuthorizationBuilder();
 builder.Services.AddControllers();
 
 // Register UserService
-builder.Services.AddHttpContextAccessor(); 
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<UserService>();
 
 var app = builder.Build();

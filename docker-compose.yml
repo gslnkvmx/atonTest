@@ -5,7 +5,7 @@ services:
     image: postgres:latest
     container_name: aton_test_db
     environment:
-      POSTGRES_DB: aton_db
+      POSTGRES_DB: aton_test_db
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
@@ -24,7 +24,7 @@ services:
       - postgres
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=aton_db;Username=postgres;Password=postgres
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=aton_test_db;Username=postgres;Password=postgres
       - Jwt__Key=your_very_long_secret_key_here_min_32_chars
       - Jwt__Issuer=aton_test
       - Jwt__Audience=aton_test
