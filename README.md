@@ -29,7 +29,7 @@ Swagger UI будет доступен по адресу: `http://localhost:8080
 2. Запустите PostgreSQL в Docker:
 
     ```bash
-    docker run --name aton-postgres -e POSTGRES_PASSWORD=your_password -e POSTGRES_DB=aton_db -p 5432:5432 -d postgres:latest
+    docker run --name aton-postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=aton_test_db -p 5432:5432 -d postgres:latest
     ```
 
 3. Настройте подключение к базе данных в файле `appsettings.json`:
